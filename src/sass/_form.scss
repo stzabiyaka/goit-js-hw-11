@@ -13,8 +13,22 @@
 }
 
 .search-form__button {
-    background-color: #ffffff;
     height: 30px;
+    width: 30px;
 
+    color: $header-color;
     border-radius: 5px;
+    border: 1px solid rgb(76, 136, 248);
+    background-color: white;
+    font-size: 16;
+    font-weight: bold;
+    background-image: url(../images/magnifier.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: all 0.25s ease-in;
+
+    &:hover, &:focus {
+        transform: scale(110%);
+        box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.623);
+    }
 }
