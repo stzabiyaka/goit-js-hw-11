@@ -28,7 +28,10 @@
     transition: all 0.25s ease-in;
 
     &:hover, &:focus {
-        transform: scale(110%);
         box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.623);
+    }
+
+    &:hover {
+        transform: scale(110%);
     }
 }

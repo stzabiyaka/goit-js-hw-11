@@ -75,24 +75,24 @@ function renderGallery (data) {
     refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
 
+function checkForLoadMore () {
+    if (fetchOptions.page <= totalPages && totalPages > 1) {
+        window.addEventListener('scroll', infiniteScroll);
+        return true;
+    } 
+
+    if (fetchOptions.page > totalPages) {
+        Notify.info("We're sorry, but you've reached the end of search results.");
+        return false;
+    }
+    return false;
+}
+
 function onInfiniteScrollTriggered () {
     fetchOptions.page += 1;
     if (checkForLoadMore()){
         loadPage (fetchOptions);
     }
-}
-
-function checkForLoadMore () {
-    if (fetchOptions.page < totalPages) {
-        window.addEventListener('scroll', infiniteScroll);
-        return true;
-    } 
-
-    if (fetchOptions.page === totalPages && totalPages !== 1) {
-        Notify.info("We're sorry, but you've reached the end of search results.");
-        return true;
-    }
-    return false;
 }
 
 function showLoadIndicator() {
