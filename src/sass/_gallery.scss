@@ -17,41 +17,46 @@
     display: block;
     flex-basis: calc((100% - ($gap * 4)) / 4);
     
-    box-shadow: 10px 5px 5px rgba(128, 128, 128, 0.342);
+    box-shadow: 5px 5px 5px rgba(128, 128, 128, 0.342);
     text-decoration: none;
     color: black;
+    transition: all 0.25s ease-in;
+
+    &:hover {
+        filter: brightness(120%);
+    }
 }
 
 .load-more {
-    display: block;
-    visibility: hidden;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 1s ease-in;
-}
-
-.load-more.is-visible {
-    visibility: visible;
-    opacity: 1;
-    pointer-events: auto;
+    display: none;
     margin-left: auto;
     margin-right: auto;
     margin-top: 20px;
-    margin-bottom: 20px;
-    height: 50px;
+    margin-bottom: 50px;
+    height: 100px;
+    width: 100px;
 
-    color: #ffffff;
-    font-size: 24;
-    font-weight: bold;
-    background-color: $header-color;
-    border-radius: 5px;
+    background-image: url(../images/spinner.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
+    border-radius: 50%;
     border: none;
-    transition: all 0.25s ease-in;
 
-    &:hover, &:focus {
-        color: rgb(250, 201, 201);
-        box-shadow: 0 0 10px #0000ff70;
+    animation-name: rotation;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;    
+}
 
-        transform: scale(110%);
+@keyframes rotation {
+    from {
+        transform: rotateZ(0deg);
     }
+    to {
+        transform: rotateZ(360deg);
+    }
+}
+
+.load-more.is-visible {
+    display: block;    
 }   

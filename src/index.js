@@ -7,13 +7,16 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 const refs = {
     form: document.querySelector('#search-form'),
     gallery: document.querySelector('.gallery'),
-    loadBtn: document.querySelector('.load-more'),
+    loadIndicator: document.querySelector('.load-more'),
+    toTopBtn: document.querySelector('.to-top-button'),
 }
-const PER_PAGE = 40;
 let totalPages = 0;
-const fetchOptions = {};
+const PER_PAGE = 40;
+const fetchOptions = {per_page: PER_PAGE};
+let galleryLightbox = null;
 
 refs.form.addEventListener('submit', onFormSubmit);
+window.addEventListener('scroll', showToTopBtn);
 
 function onFormSubmit (evt) {
     const query = evt.currentTarget.elements.searchQuery.value.trim().replace(' ', '+');
@@ -30,29 +33,37 @@ function onFormSubmit (evt) {
 
     fetchOptions.query = query;
     fetchOptions.page = 1;
-    fetchOptions.per_page = PER_PAGE;
 
     loadPage(fetchOptions);
-    
-    let gallery = new SimpleLightbox('.gallery a');
-    makeLoadBtnVisible();
-    refs.form.reset();
 }
 
 function loadPage (options) {
     fetchImages(options)
     .then(handleResult)
     .catch(handleError);
+    showLoadIndicator();
 }
 
 function handleResult (value) {
-    if (value.total === 0) {
-        Notify.failure('Sorry, there is no images for your search request');
+    hideLoadIndicator();
+
+    if (fetchOptions.page === 1) {
+        if (value.total === 0) {
+            Notify.failure('Sorry, there are no images matching your search query. Please try again');
+            return;
+        }
+        totalPages = Math.ceil(value.totalHits / PER_PAGE);
+        renderGallery(value.hits);
+        galleryLightbox = new SimpleLightbox('.gallery a');
+        checkForLoadMore();
+        Notify.success(`Hooray! We found ${value.totalHits} images.`);
         return;
     }
-    totalPages = Math.ceil(value.totalHits / PER_PAGE);
-    console.log(value);
+    
     renderGallery(value.hits);
+    galleryLightbox.refresh();
+    onLoadPageScroll();
+    checkForLoadMore();
 }
 
 function handleError (error) {
@@ -64,30 +75,67 @@ function renderGallery (data) {
     refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
 
-function onLoadBtnClick () {
+function onInfiniteScrollTriggered () {
     fetchOptions.page += 1;
-    loadPage (fetchOptions);
-    checkLoadBtn();
-}
-
-function makeLoadBtnVisible () {
-    if (fetchOptions.page < totalPages) {
-        refs.loadBtn.addEventListener('click', onLoadBtnClick);
-        refs.loadBtn.classList.add('is-visible');
-        return;
+    if (checkForLoadMore()){
+        loadPage (fetchOptions);
     }
-    notifyFinish();
 }
 
-function checkLoadBtn () {
-    if (fetchOptions.page !== totalPages) {
-        return;
+function checkForLoadMore () {
+    if (fetchOptions.page < totalPages) {
+        window.addEventListener('scroll', infiniteScroll);
+        return true;
     } 
-        refs.loadBtn.classList.remove('is-visible');
-        refs.loadBtn.removeEventListener('click', onLoadBtnClick);
-        notifyFinish();
+
+    if (fetchOptions.page === totalPages && totalPages !== 1) {
+        Notify.info("We're sorry, but you've reached the end of search results.");
+        return true;
+    }
+    return false;
 }
 
-function notifyFinish () {
-    Notify.info('That`s all images, that we have for you');
+function showLoadIndicator() {
+    refs.loadIndicator.classList.add('is-visible');
 }
+
+function hideLoadIndicator () {
+    refs.loadIndicator.classList.remove('is-visible');
+}
+
+function onLoadPageScroll () {
+    const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
+
+    window.scrollBy({
+        top: cardHeight * 2,
+        behavior: "smooth",
+    });
+}
+
+function showToTopBtn() {
+    const target = document.documentElement;
+    if (target.scrollTop > 50) {
+      refs.toTopBtn.classList.add('is-visible');
+      refs.toTopBtn.addEventListener('click', scrollToTop);
+    } else {
+      refs.toTopBtn.classList.remove('is-visible');
+      refs.toTopBtn.removeEventListener('click', scrollToTop);
+    }
+  }
+
+  function scrollToTop() {
+    window.scroll({
+        top: 0,
+        behavior: "smooth",
+      });
+  }
+
+  function infiniteScroll () {
+    const target = document.documentElement;
+    if (target.getBoundingClientRect().bottom < target.clientHeight+50) {
+        onInfiniteScrollTriggered();
+        window.removeEventListener('scroll', infiniteScroll);
+    }
+  }

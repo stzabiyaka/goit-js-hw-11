@@ -1,6 +1,9 @@
 .header {
     display: flex;
     padding: 20px;
+    height: $header-height;
 
     background-color: $header-color;
+    z-index: 1;
 }
+
