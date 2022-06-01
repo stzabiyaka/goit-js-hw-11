@@ -4,18 +4,40 @@
 
 .gallery {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    margin-top: -$gap;
 
-    margin-left: -30px;
-    margin-top: -30px;
+    
+
+    @media screen and (min-width: 480px) {
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-left: -$gap;
+    }
+
 }
 
 .gallery > a {
-    $gap: 30px;
-    margin-left: $gap;
-    margin-top: $gap;
+    
     display: block;
-    flex-basis: calc((100% - ($gap * 4)) / 4);
+        margin-left: 0;
+        margin-top: $gap;
+
+    @media screen and (min-width: 480px) {
+        margin-left: $gap;
+        flex-basis: calc((100% - ($gap * 2)) / 2);
+    }
+               
+
+    @media screen and (min-width: 768px) {
+        flex-basis: calc((100% - ($gap * 3)) / 3);
+    }
+    
+
+    @media screen and (min-width: 1200px) {
+        flex-basis: calc((100% - ($gap * 4)) / 4);
+    }
     
     box-shadow: 5px 5px 5px rgba(128, 128, 128, 0.342);
     text-decoration: none;
@@ -32,29 +54,16 @@
     margin-left: auto;
     margin-right: auto;
     margin-top: 20px;
-    margin-bottom: 50px;
-    height: 100px;
-    width: 100px;
+    margin-bottom: 20px;
+    height: 80px;
+    width: 80px;
 
-    background-image: url(../images/spinner.svg);
+    background-image: url(../images/dots.svg);
     background-repeat: no-repeat;
     background-position: center;
     background-color: transparent;
     border-radius: 50%;
-    border: none;
-
-    animation-name: rotation;
-    animation-duration: 2s;
-    animation-iteration-count: infinite;    
-}
-
-@keyframes rotation {
-    from {
-        transform: rotateZ(0deg);
-    }
-    to {
-        transform: rotateZ(360deg);
-    }
+    border: none;  
 }
 
 .load-more.is-visible {
