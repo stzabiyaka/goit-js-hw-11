@@ -1,5 +1,17 @@
+.body {
+
+    color: #212121;
+    background-color: #FFFFFF;
+
+    &.theme-dark {
+        color: #FFFFFF;
+    background-color: #02023a;
+    }
+}
+
 .header {
     display: flex;
+    align-items: center;
     padding: 20px;
     height: $header-height;
 

@@ -3,12 +3,12 @@ import ToTopButton from "./js-classes/to-top-button.js";
 import InfiniteScroll from "./js-classes/infinite-scroll.js";
 import onLoadPageScroll from "./js-modules/onload-page-scroll.js";
 import LoadIndicator from "./js-classes/load-indicator.js";
+import ThemeButton from "./js-classes/theme-button.js";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from "simplelightbox";
 import cardTemplate from './templates/image-card.hbs';
 
 import "simplelightbox/dist/simple-lightbox.min.css";
-import ToTopButton from "./js-classes/to-top-button.js";
 
 const refs = {
     form: document.querySelector('#search-form'),
@@ -18,6 +18,7 @@ const refs = {
 
 const imagesApiService = new ImagesApiService();
 const toTopButton = new ToTopButton();
+const themeButton = new ThemeButton();
 const infiniteScroll = new InfiniteScroll({onTriggered: loadNextPage});
 const loadIndicator = new LoadIndicator({target: refs.loadIndicator});
 
@@ -25,8 +26,9 @@ const PER_PAGE = 40;
 
 let galleryLightbox = null;
 
-refs.form.addEventListener('submit', onFormSubmit);
 
+
+refs.form.addEventListener('submit', onFormSubmit);
 
 function onFormSubmit (evt) {
     evt.preventDefault();
@@ -44,16 +46,21 @@ function onFormSubmit (evt) {
     loadData();
 }
 
-function loadData () {
+async function loadData () {
     loadIndicator.show();
     
-    imagesApiService.fetchImages()
-        .then(data => handleData(data))
-        .catch(error => handleError(error));
+    try {
+        const data = await imagesApiService.getImages();
+        updateGalley(data);
+    }
+    
+    catch (error) {
+        console.log('Error occured:', error.message);
+    }
     
 }
 
-function handleData (data) {
+function updateGalley (data) {
     loadIndicator.hide();
 
     if (data.totalHits === 0) {
@@ -61,7 +68,7 @@ function handleData (data) {
         return;
     }
 
-    renderGallery(data.hits);
+    renderPage(data.hits);
 
     if (imagesApiService.page === 1) {
         galleryLightbox = new SimpleLightbox('.gallery a');
@@ -73,10 +80,6 @@ function handleData (data) {
     }
     
     checkForLoadMore();
-}
-
-function handleError (error) {
-    console.log('Error occured:', error);
 }
 
 function checkForLoadMore () {
@@ -92,7 +95,7 @@ function checkForLoadMore () {
     return false;
 }
 
-function renderGallery (data) {
+function renderPage (data) {
     const markup = data.map(element => cardTemplate(element)).join('');
     refs.gallery.insertAdjacentHTML('beforeend', markup);
 }

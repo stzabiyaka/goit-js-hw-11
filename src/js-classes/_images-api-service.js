@@ -1,3 +1,5 @@
+const axios = require('axios').default;
+
 export default class ImagesApiService {
         searchQuery;
         page;
@@ -8,7 +10,6 @@ export default class ImagesApiService {
         #ACCESS_KEY;
         #queryParameters;
     constructor () {
-        this.axios = require('axios').default;
         this.searchQuery = '';
         this.page = 1;
         this.perPage = 40;
@@ -19,14 +20,18 @@ export default class ImagesApiService {
         this.#queryParameters = 'image_type=photo&orientation=horizontal&safesearch=true';
     }
 
-    async getImages() {
+    async fetchImages() {
         const url = `${this.#BASE_URL}?key=${this.#ACCESS_KEY}&q=${this.searchQuery}&${this.#queryParameters}&per_page=${this.perPage}&page=${this.page}`;
-            const response = await this.axios.get(url);
-            this.totalPages = Math.ceil(response.data.totalHits / this.perPage);
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('not found');
+            }
+            const data = await response.json();
+            this.totalPages = Math.ceil(data.totalHits / this.perPage);
             if (this.page === this.totalPages) {
                 this.isFinalPage = true;
             }
-            return response.data;
+            return data;
     }
     
 
