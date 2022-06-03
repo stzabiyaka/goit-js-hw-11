@@ -23,6 +23,7 @@ const infiniteScroll = new InfiniteScroll({onTriggered: loadNextPage});
 const loadIndicator = new LoadIndicator({target: refs.loadIndicator});
 
 const PER_PAGE = 40;
+const notifyOptios = { width: "320px" };
 
 let galleryLightbox = null;
 
@@ -35,13 +36,13 @@ function onFormSubmit (evt) {
     imagesApiService.searchQuery = evt.currentTarget.elements.searchQuery.value.trim().replace(' ', '+');
     
     if (imagesApiService.searchQuery === '') {
-        Notify.warning('Please, fill in search field with at least one symbol.');
+        Notify.warning('Please, fill in search field with at least one symbol.', notifyOptios);
         refs.form.reset();
         return;
     }
 
     if (imagesApiService.searchQuery.length > 100) {
-        Notify.warning('Maximum query length should not exceed 100 symbols. Please, correct and try again.');
+        Notify.warning('Maximum query length should not exceed 100 symbols. Please, correct and try again.', notifyOptios);
         return;
     }
 
@@ -69,7 +70,7 @@ function updateGalley (data) {
     loadIndicator.hide();
 
     if (data.totalHits === 0) {
-        Notify.failure('Sorry, there are no images matching your search query. Please try again');
+        Notify.failure('Sorry, there are no images matching your search query. Please try again', notifyOptios);
         return;
     }
 
@@ -77,7 +78,7 @@ function updateGalley (data) {
 
     if (imagesApiService.page === 1) {
         galleryLightbox = new SimpleLightbox('.gallery a', { captions: false, showCounter: false });
-        Notify.success(`Hooray! We found ${data.totalHits} images.`);
+        Notify.success(`Hooray! We found ${data.totalHits} images.`, notifyOptios);
         checkForLoadMore();
     } else {
         galleryLightbox.refresh();
@@ -94,7 +95,7 @@ function checkForLoadMore () {
     } 
 
     if (imagesApiService.totalPages > 1) {
-        Notify.info("We're sorry, but you've reached the end of search results.");
+        Notify.info("We're sorry, but you've reached the end of search results.", notifyOptios);
     }
 
     return false;
