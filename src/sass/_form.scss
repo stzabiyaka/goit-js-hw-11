@@ -3,18 +3,21 @@
     align-items: center;
     margin-left: auto;
     margin-right: auto;
+    height: 30px;
 }
 
 .search-form__field {
-    margin-right: 10px;
     border-radius: 5px;
+    height: 100%;
     
     font-size: 20;
+    border: none;
 }
 
 .search-form__button {
     height: 30px;
     width: 30px;
+    margin-left: 10px;;
 
     color: $header-color;
     border-radius: 5px;
