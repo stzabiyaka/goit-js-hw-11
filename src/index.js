@@ -71,7 +71,7 @@ function updateGalley (data) {
     renderPage(data.hits);
 
     if (imagesApiService.page === 1) {
-        galleryLightbox = new SimpleLightbox('.gallery a');
+        galleryLightbox = new SimpleLightbox('.gallery a', { captions: false, showCounter: false });
         Notify.success(`Hooray! We found ${data.totalHits} images.`);
         checkForLoadMore();
     } else {
