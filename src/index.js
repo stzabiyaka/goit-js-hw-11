@@ -35,8 +35,13 @@ function onFormSubmit (evt) {
     imagesApiService.searchQuery = evt.currentTarget.elements.searchQuery.value.trim().replace(' ', '+');
     
     if (imagesApiService.searchQuery === '') {
-        Notify.warning('Please, fill in search field with at least one symbol');
+        Notify.warning('Please, fill in search field with at least one symbol.');
         refs.form.reset();
+        return;
+    }
+
+    if (imagesApiService.searchQuery.length > 100) {
+        Notify.warning('Maximum query length should not exceed 100 symbols. Please try again.');
         return;
     }
 
