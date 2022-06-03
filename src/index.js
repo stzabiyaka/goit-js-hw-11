@@ -41,7 +41,7 @@ function onFormSubmit (evt) {
     }
 
     if (imagesApiService.searchQuery.length > 100) {
-        Notify.warning('Maximum query length should not exceed 100 symbols. Please try again.');
+        Notify.warning('Maximum query length should not exceed 100 symbols. Please, correct and try again.');
         return;
     }
 
