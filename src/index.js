@@ -7,7 +7,6 @@ import ThemeButton from "./js-classes/theme-button.js";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from "simplelightbox";
 import cardTemplate from './templates/image-card.hbs';
-
 // import "simplelightbox/dist/simple-lightbox.min.css";
 
 const refs = {
