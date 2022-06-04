@@ -8,7 +8,7 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from "simplelightbox";
 import cardTemplate from './templates/image-card.hbs';
 
-import "simplelightbox/dist/simple-lightbox.min.css";
+// import "simplelightbox/dist/simple-lightbox.min.css";
 
 const refs = {
     form: document.querySelector('#search-form'),
@@ -35,7 +35,7 @@ function onFormSubmit (evt) {
     evt.preventDefault();
     imagesApiService.searchQuery = evt.currentTarget.elements.searchQuery.value.trim().replace(' ', '+');
     
-    if (imagesApiService.searchQuery === '') {
+    if (!imagesApiService.searchQuery) {
         Notify.warning('Please, fill in search field with at least one symbol.', notifyOptios);
         refs.form.reset();
         return;
@@ -77,7 +77,7 @@ function updateGalley (data) {
     renderPage(data.hits);
 
     if (imagesApiService.page === 1) {
-        galleryLightbox = new SimpleLightbox('.gallery a', { captions: false, showCounter: false });
+        galleryLightbox = new SimpleLightbox('.gallery a', { captions: false});
         Notify.success(`Hooray! We found ${data.totalHits} images.`, notifyOptios);
         checkForLoadMore();
     } else {

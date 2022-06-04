@@ -19,14 +19,13 @@ export default class ThemeButton {
             return;
         }
         
-        this.refs.target.classList.add('theme-dark');
-        this.refs.themeBtn.classList.add('theme-dark');
+        this.#toggleClass();
     }
 
     #changeTheme() {
         const themeState = this.#inverseTheme(this.#getThemeState());
-        this.refs.target.classList.toggle('theme-dark');
-        this.refs.themeBtn.classList.toggle('theme-dark');
+
+        this.#toggleClass();
         this.#setThemeState (themeState);
         this.#setBtnTitle(themeState);
     }
@@ -56,5 +55,12 @@ export default class ThemeButton {
 
     #inverseTheme (theme) {
         return theme === 'light' ? 'dark' : 'light';
+    }
+
+    #toggleClass() {
+        const values = Object.values(this.refs);
+        for (const value of values) {
+            value.classList.toggle('theme-dark');
+        }
     }
 }
